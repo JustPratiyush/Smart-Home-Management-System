@@ -39,23 +39,26 @@ function isAdmin(req, res, next) {
   }
 }
 
+// Database connection function
+async function getConnection() {
+  return await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "123",
+    database: "smart_home_db",
+  });
+}
+
 // Routes
 app.get("/login", (req, res) => {
   res.render("login", { error: null });
 });
 
-// IMPORTANT: This is the only login POST route (removed the duplicate)
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
-
+    const connection = await getConnection();
     const [users] = await connection.execute(
       "SELECT * FROM Users WHERE Email = ?",
       [email]
@@ -63,8 +66,7 @@ app.post("/login", async (req, res) => {
     await connection.end();
 
     const user = users[0];
-    // Check if the password is "1234" since that's your default for all users
-    if (user && password === "1234") {
+    if (user && password === user.Password) {
       req.session.user = {
         id: user.UserID,
         name: user.Name,
@@ -92,46 +94,6 @@ app.get("/logout", (req, res) => {
   });
 });
 
-// Home Route (protected)
-app.get("/", isAuthenticated, (req, res) => {
-  res.send(`
-    <h2>Welcome ${req.session.user.name} to the Smart Home Management System</h2>
-    <ul>
-      <li><a href="/users">View Users</a></li>
-      <li><a href="/devices">View Devices</a></li>
-      <li><a href="/rooms">View Rooms</a></li>
-      <li><a href="/sensors">View Sensors</a></li>
-      <li><a href="/automation">View Automation Rules</a></li>
-      <li><a href="/logout">Logout</a></li>
-    </ul>
-  `);
-});
-
-// Admin routes
-app.get("/admin/dashboard", isAuthenticated, isAdmin, (req, res) => {
-  res.render("admin/dashboard", { user: req.session.user });
-});
-
-// Add route to view all user credentials (admin only)
-app.get("/admin/users", isAuthenticated, isAdmin, async (req, res) => {
-  try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
-
-    const [users] = await connection.execute("SELECT * FROM Users");
-    await connection.end();
-
-    res.render("admin/users", { users });
-  } catch (err) {
-    res.status(500).send("Database error");
-    console.error(err);
-  }
-});
-
 // User registration routes
 app.get("/register", (req, res) => {
   res.render("register", { error: null });
@@ -141,12 +103,7 @@ app.post("/register", async (req, res) => {
   const { name, email, password, contact, address } = req.body;
 
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
+    const connection = await getConnection();
 
     // Check if email already exists
     const [existingUsers] = await connection.execute(
@@ -173,7 +130,41 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// Admin route to create a new user
+// Home Route (protected)
+app.get("/", isAuthenticated, (req, res) => {
+  res.send(`
+    <h2>Welcome ${req.session.user.name} to the Smart Home Management System</h2>
+    <ul>
+      <li><a href="/users">View Users</a></li>
+      <li><a href="/devices">View Devices</a></li>
+      <li><a href="/rooms">View Rooms</a></li>
+      <li><a href="/sensors">View Sensors</a></li>
+      <li><a href="/automation">View Automation Rules</a></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  `);
+});
+
+// Admin routes
+app.get("/admin/dashboard", isAuthenticated, isAdmin, (req, res) => {
+  res.render("admin/dashboard", { user: req.session.user });
+});
+
+// Admin user management
+app.get("/admin/users", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const connection = await getConnection();
+    const [users] = await connection.execute("SELECT * FROM Users");
+    await connection.end();
+
+    res.render("admin/users", { users });
+  } catch (err) {
+    res.status(500).send("Database error");
+    console.error(err);
+  }
+});
+
+// Admin user creation
 app.get("/admin/users/create", isAuthenticated, isAdmin, (req, res) => {
   res.render("admin/create-user", { error: null });
 });
@@ -183,12 +174,7 @@ app.post("/admin/users/create", isAuthenticated, isAdmin, async (req, res) => {
   const adminFlag = isAdmin ? 1 : 0;
 
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
+    const connection = await getConnection();
 
     // Check if email already exists
     const [existingUsers] = await connection.execute(
@@ -217,16 +203,105 @@ app.post("/admin/users/create", isAuthenticated, isAdmin, async (req, res) => {
   }
 });
 
+// Edit user route - GET
+app.get("/admin/users/edit/:id", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const connection = await getConnection();
+    const [users] = await connection.execute(
+      "SELECT * FROM Users WHERE UserID = ?",
+      [userId]
+    );
+    await connection.end();
+
+    if (users.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    res.render("admin/edit-user", { user: users[0], error: null });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching user data");
+  }
+});
+
+// Edit user route - POST
+app.post(
+  "/admin/users/edit/:id",
+  isAuthenticated,
+  isAdmin,
+  async (req, res) => {
+    const userId = req.params.id;
+    const { name, email, password, contact, address, isAdmin } = req.body;
+    const adminFlag = isAdmin ? 1 : 0;
+
+    try {
+      const connection = await getConnection();
+
+      // Check if email is already used by another user
+      const [existingUsers] = await connection.execute(
+        "SELECT * FROM Users WHERE Email = ? AND UserID != ?",
+        [email, userId]
+      );
+
+      if (existingUsers.length > 0) {
+        // Close the first connection
+        await connection.end();
+
+        // Create a new connection to fetch the user details
+        const newConnection = await getConnection();
+        const [users] = await newConnection.execute(
+          "SELECT * FROM Users WHERE UserID = ?",
+          [userId]
+        );
+        await newConnection.end();
+
+        return res.render("admin/edit-user", {
+          user: users[0],
+          error: "Email already used by another user",
+        });
+      }
+
+      // Update user
+      await connection.execute(
+        "UPDATE Users SET Name = ?, Email = ?, Password = ?, ContactNumber = ?, Address = ?, IsAdmin = ? WHERE UserID = ?",
+        [name, email, password, contact, address, adminFlag, userId]
+      );
+
+      await connection.end();
+      res.redirect("/admin/users");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error updating user");
+    }
+  }
+);
+
+// Delete user route
+app.get(
+  "/admin/users/delete/:id",
+  isAuthenticated,
+  isAdmin,
+  async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+      const connection = await getConnection();
+      await connection.execute("DELETE FROM Users WHERE UserID = ?", [userId]);
+      await connection.end();
+
+      res.redirect("/admin/users");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error deleting user");
+    }
+  }
+);
+
 // Other Routes (all protected)
 app.get("/users", isAuthenticated, async (req, res) => {
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
-
+    const connection = await getConnection();
     const [users] = await connection.execute("SELECT * FROM Users");
     await connection.end();
 
@@ -239,13 +314,7 @@ app.get("/users", isAuthenticated, async (req, res) => {
 
 app.get("/devices", isAuthenticated, async (req, res) => {
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
-
+    const connection = await getConnection();
     const [devices] = await connection.execute(`
       SELECT d.DeviceID, d.Name, d.Type, d.Status, d.PowerConsumption, u.Name AS UserName
       FROM Devices d
@@ -262,13 +331,7 @@ app.get("/devices", isAuthenticated, async (req, res) => {
 
 app.get("/rooms", isAuthenticated, async (req, res) => {
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
-
+    const connection = await getConnection();
     const [rooms] = await connection.execute(`
       SELECT r.RoomID, r.Name AS RoomName, u.Name AS UserName
       FROM Rooms r
@@ -285,13 +348,7 @@ app.get("/rooms", isAuthenticated, async (req, res) => {
 
 app.get("/sensors", isAuthenticated, async (req, res) => {
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
-
+    const connection = await getConnection();
     const [sensors] = await connection.execute(`
       SELECT s.SensorID, s.Type, s.Status, r.Name AS RoomName
       FROM Sensors s
@@ -308,13 +365,7 @@ app.get("/sensors", isAuthenticated, async (req, res) => {
 
 app.get("/automation", isAuthenticated, async (req, res) => {
   try {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "123",
-      database: "smart_home_db",
-    });
-
+    const connection = await getConnection();
     const [rules] = await connection.execute(`
       SELECT a.RuleID, a.Description, a.ScheduleTime, a.Action, d.Name AS DeviceName
       FROM AutomationRules a

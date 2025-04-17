@@ -1,24 +1,147 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Login</title>
+    <title>Login | Smart Home Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fa;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .container {
+        padding: 2rem;
+        max-width: 400px;
+        margin: 0 auto;
+        flex: 1;
+      }
+      header {
+        background-color: #1a73e8;
+        color: white;
+        padding: 1rem 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+      h1,
+      h2 {
+        margin: 0;
+        font-weight: 400;
+      }
+      form {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #5f6368;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+      input:focus,
+      select:focus {
+        border-color: #1a73e8;
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 12px 16px;
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        margin-top: 1rem;
+      }
+      button:hover {
+        background-color: #0d62cb;
+      }
+      .error {
+        color: #d93025;
+        background-color: rgba(217, 48, 37, 0.05);
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+      .register-link {
+        text-align: center;
+        margin-top: 1rem;
+      }
+      .register-link a {
+        color: #1a73e8;
+        text-decoration: none;
+      }
+      .register-link a:hover {
+        text-decoration: underline;
+      }
+      .logo {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .logo i {
+        font-size: 3rem;
+        color: #1a73e8;
+      }
+    </style>
   </head>
   <body>
-    <h2>Login to Smart Home System</h2>
+    <header>
+      <h1>Smart Home Management System</h1>
+    </header>
 
-    <% if (error) { %>
-    <p style="color: red"><%= error %></p>
-    <% } %>
+    <div class="container">
+      <div class="logo">
+        <i class="fas fa-home"></i>
+      </div>
 
-    <form method="POST" action="/login">
-      <label>Email:</label>
-      <input type="email" name="email" required />
-      <br /><br />
-      <label>Password:</label>
-      <input type="password" name="password" required />
-      <br /><br />
-      <button type="submit">Login</button>
-      <p>Don't have an account? <a href="/register">Register here</a></p>
-    </form>
+      <form method="POST" action="/login">
+        <h2 style="text-align: center; margin-bottom: 1.5rem">Login</h2>
+
+        <% if (error) { %>
+        <p class="error"><%= error %></p>
+        <% } %>
+
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+
+        <div class="register-link">
+          <p>Don't have an account? <a href="/register">Register here</a></p>
+        </div>
+      </form>
+    </div>
   </body>
 </html>

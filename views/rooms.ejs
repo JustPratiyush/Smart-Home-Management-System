@@ -1,16 +1,125 @@
-<h1>Rooms</h1>
-<table border="1" cellpadding="8">
-  <tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>User</th>
-  </tr>
-  <% rooms.forEach(room => { %>
-  <tr>
-    <td><%= room.RoomID %></td>
-    <td><%= room.RoomName %></td>
-    <td><%= room.UserName || 'Unassigned' %></td>
-  </tr>
-  <% }) %>
-</table>
-<a href="/">← Back</a>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rooms | Smart Home Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fa;
+        color: #333;
+      }
+      .container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      header {
+        background-color: #1a73e8;
+        color: white;
+        padding: 1rem 2rem;
+        margin-bottom: 2rem;
+      }
+      h1 {
+        margin: 0;
+        font-weight: 400;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        background-color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+      th {
+        background-color: #f8f9fa;
+        font-weight: 500;
+        color: #5f6368;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+      }
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+      a.back {
+        display: inline-block;
+        margin: 20px 0;
+        text-decoration: none;
+        color: #1a73e8;
+        font-weight: 500;
+      }
+      a.back i {
+        margin-right: 5px;
+      }
+      a.back:hover {
+        text-decoration: underline;
+      }
+      .room-icon {
+        margin-right: 5px;
+        color: #5f6368;
+      }
+      .user-name {
+        display: flex;
+        align-items: center;
+      }
+      .user-name i {
+        margin-right: 5px;
+        color: #5f6368;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Rooms</h1>
+    </header>
+
+    <div class="container">
+      <a href="/" class="back">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </a>
+
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Room Name</th>
+          <th>User</th>
+        </tr>
+        <% rooms.forEach(room => { %>
+        <tr>
+          <td><%= room.RoomID %></td>
+          <td>
+            <% if (room.RoomName.toLowerCase().includes('living')) { %>
+            <i class="fas fa-couch room-icon"></i>
+            <% } else if (room.RoomName.toLowerCase().includes('kitchen')) { %>
+            <i class="fas fa-utensils room-icon"></i>
+            <% } else if (room.RoomName.toLowerCase().includes('bed')) { %>
+            <i class="fas fa-bed room-icon"></i>
+            <% } else if (room.RoomName.toLowerCase().includes('bath')) { %>
+            <i class="fas fa-bath room-icon"></i>
+            <% } else { %>
+            <i class="fas fa-door-open room-icon"></i>
+            <% } %> <%= room.RoomName %>
+          </td>
+          <td class="user-name">
+            <% if (room.UserName) { %>
+            <i class="fas fa-user"></i> <%= room.UserName %> <% } else { %>
+            <i class="fas fa-user-slash"></i> Unassigned <% } %>
+          </td>
+        </tr>
+        <% }) %>
+      </table>
+    </div>
+  </body>
+</html>

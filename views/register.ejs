@@ -1,77 +1,162 @@
-<!-- views/register.ejs -->
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Register</title>
+    <title>Register | Smart Home Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
     <style>
       body {
-        font-family: Arial, sans-serif;
-        margin: 2rem;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fa;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .container {
+        padding: 2rem;
+        max-width: 500px;
+        margin: 0 auto;
+        flex: 1;
+      }
+      header {
+        background-color: #1a73e8;
+        color: white;
+        padding: 1rem 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+      h1,
+      h2 {
+        margin: 0;
+        font-weight: 400;
       }
       form {
-        max-width: 400px;
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
       .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 1.5rem;
       }
       label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #5f6368;
       }
-      input {
+      input,
+      select {
         width: 100%;
-        padding: 8px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
         box-sizing: border-box;
       }
+      input:focus,
+      select:focus {
+        border-color: #1a73e8;
+        outline: none;
+      }
       button {
-        padding: 10px 15px;
-        background-color: #4caf50;
+        width: 100%;
+        padding: 12px 16px;
+        background-color: #1a73e8;
         color: white;
         border: none;
+        border-radius: 4px;
         cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        margin-top: 1rem;
+      }
+      button:hover {
+        background-color: #0d62cb;
       }
       .error {
-        color: red;
-        margin-bottom: 10px;
+        color: #d93025;
+        background-color: rgba(217, 48, 37, 0.05);
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+      .login-link {
+        text-align: center;
+        margin-top: 1rem;
+      }
+      .login-link a {
+        color: #1a73e8;
+        text-decoration: none;
+      }
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+      .logo {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .logo i {
+        font-size: 3rem;
+        color: #1a73e8;
       }
     </style>
   </head>
   <body>
-    <h2>Register for Smart Home System</h2>
+    <header>
+      <h1>Smart Home Management System</h1>
+    </header>
 
-    <% if (error) { %>
-    <p class="error"><%= error %></p>
-    <% } %>
-
-    <form method="POST" action="/register">
-      <div class="form-group">
-        <label>Name:</label>
-        <input type="text" name="name" required />
+    <div class="container">
+      <div class="logo">
+        <i class="fas fa-user-plus"></i>
       </div>
 
-      <div class="form-group">
-        <label>Email:</label>
-        <input type="email" name="email" required />
-      </div>
+      <form method="POST" action="/register">
+        <h2 style="text-align: center; margin-bottom: 1.5rem">Register</h2>
 
-      <div class="form-group">
-        <label>Password:</label>
-        <input type="password" name="password" required />
-      </div>
+        <% if (error) { %>
+        <p class="error"><%= error %></p>
+        <% } %>
 
-      <div class="form-group">
-        <label>Contact Number:</label>
-        <input type="text" name="contact" />
-      </div>
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+        </div>
 
-      <div class="form-group">
-        <label>Address:</label>
-        <input type="text" name="address" />
-      </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
 
-      <button type="submit">Register</button>
-    </form>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+        </div>
 
-    <p>Already have an account? <a href="/login">Login here</a></p>
+        <div class="form-group">
+          <label for="contact">Contact Number:</label>
+          <input type="text" id="contact" name="contact" />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address:</label>
+          <input type="text" id="address" name="address" />
+        </div>
+
+        <button type="submit"><i class="fas fa-user-plus"></i> Register</button>
+
+        <div class="login-link">
+          <p>Already have an account? <a href="/login">Login here</a></p>
+        </div>
+      </form>
+    </div>
   </body>
 </html>

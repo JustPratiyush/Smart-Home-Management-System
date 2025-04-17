@@ -171,7 +171,8 @@ app.get("/admin/users/create", isAuthenticated, isAdmin, (req, res) => {
 
 app.post("/admin/users/create", isAuthenticated, isAdmin, async (req, res) => {
   const { name, email, password, contact, address, isAdmin } = req.body;
-  const adminFlag = isAdmin ? 1 : 0;
+  // Fix: Convert isAdmin correctly from form value
+  const adminFlag = isAdmin === "1" ? 1 : 0;
 
   try {
     const connection = await getConnection();
@@ -233,7 +234,8 @@ app.post(
   async (req, res) => {
     const userId = req.params.id;
     const { name, email, password, contact, address, isAdmin } = req.body;
-    const adminFlag = isAdmin ? 1 : 0;
+    // Fix: Convert isAdmin correctly from form value
+    const adminFlag = isAdmin === "1" ? 1 : 0;
 
     try {
       const connection = await getConnection();

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Devices</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+      }
+      th {
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Smart Devices</h1>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Power (W)</th>
+        <th>User</th>
+      </tr>
+      <% devices.forEach(device => { %>
+      <tr>
+        <td><%= device.DeviceID %></td>
+        <td><%= device.Name %></td>
+        <td><%= device.Type %></td>
+        <td><%= device.Status %></td>
+        <td><%= device.PowerConsumption %></td>
+        <td><%= device.UserName || 'Unassigned' %></td>
+      </tr>
+      <% }) %>
+    </table>
+    <p><a href="/">← Back to Home</a></p>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+<h1>Rooms</h1>
+<table border="1" cellpadding="8">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>User</th>
+  </tr>
+  <% rooms.forEach(room => { %>
+  <tr>
+    <td><%= room.RoomID %></td>
+    <td><%= room.RoomName %></td>
+    <td><%= room.UserName || 'Unassigned' %></td>
+  </tr>
+  <% }) %>
+</table>
+<a href="/">← Back</a>

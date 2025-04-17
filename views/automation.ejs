@@ -1,0 +1,20 @@
+<h1>Automation Rules</h1>
+<table border="1" cellpadding="8">
+  <tr>
+    <th>ID</th>
+    <th>Description</th>
+    <th>Schedule</th>
+    <th>Action</th>
+    <th>Device</th>
+  </tr>
+  <% rules.forEach(rule => { %>
+  <tr>
+    <td><%= rule.RuleID %></td>
+    <td><%= rule.Description %></td>
+    <td><%= rule.ScheduleTime %></td>
+    <td><%= rule.Action %></td>
+    <td><%= rule.DeviceName || 'Unassigned' %></td>
+  </tr>
+  <% }) %>
+</table>
+<a href="/">← Back</a>

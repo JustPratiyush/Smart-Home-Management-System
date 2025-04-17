@@ -1,0 +1,18 @@
+<h1>Sensors</h1>
+<table border="1" cellpadding="8">
+  <tr>
+    <th>ID</th>
+    <th>Type</th>
+    <th>Status</th>
+    <th>Room</th>
+  </tr>
+  <% sensors.forEach(sensor => { %>
+  <tr>
+    <td><%= sensor.SensorID %></td>
+    <td><%= sensor.Type %></td>
+    <td><%= sensor.Status %></td>
+    <td><%= sensor.RoomName || 'Unassigned' %></td>
+  </tr>
+  <% }) %>
+</table>
+<a href="/">← Back</a>

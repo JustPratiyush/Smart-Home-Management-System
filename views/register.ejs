@@ -1,0 +1,77 @@
+<!-- views/register.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+      }
+      form {
+        max-width: 400px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .error {
+        color: red;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Register for Smart Home System</h2>
+
+    <% if (error) { %>
+    <p class="error"><%= error %></p>
+    <% } %>
+
+    <form method="POST" action="/register">
+      <div class="form-group">
+        <label>Name:</label>
+        <input type="text" name="name" required />
+      </div>
+
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" name="password" required />
+      </div>
+
+      <div class="form-group">
+        <label>Contact Number:</label>
+        <input type="text" name="contact" />
+      </div>
+
+      <div class="form-group">
+        <label>Address:</label>
+        <input type="text" name="address" />
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="/login">Login here</a></p>
+  </body>
+</html>

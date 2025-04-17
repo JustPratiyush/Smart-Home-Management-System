@@ -1,49 +1,183 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Devices</title>
+    <title>Devices | Smart Home Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
     <style>
+      /* --- Base Styles (Similar to home.ejs) --- */
       body {
-        font-family: Arial, sans-serif;
-        margin: 2rem;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fa; /* Light gray background */
+        color: #333; /* Default text color */
       }
+
+      .container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        background-color: #1a73e8; /* Blue header background */
+        color: white;
+        padding: 1rem 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Consistent heading styling */
+      header h1,
+      .page-title {
+        margin: 0;
+        font-weight: 400; /* Normal weight */
+      }
+
+      .logout {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: opacity 0.2s;
+      }
+      .logout:hover {
+        opacity: 0.8;
+      }
+
+      .logout i {
+        margin-right: 0.5rem;
+      }
+
+      /* --- Page Specific Styles --- */
+
+      /* Card-like container for the table */
+      .content-box {
+        background-color: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem; /* Space before the back link */
+      }
+
+      /* Styling for the H1 title within the content box */
+      .page-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem; /* Space below title */
+        color: #333;
+      }
+
+      .page-title i {
+        font-size: 1.8rem; /* Slightly smaller than welcome icon */
+        margin-right: 1rem;
+        color: #1a73e8; /* Blue icon */
+      }
+
+      /* Table Styling */
       table {
         border-collapse: collapse;
         width: 100%;
+        font-size: 0.95rem; /* Slightly adjust font size if needed */
       }
+
       th,
       td {
-        padding: 10px;
-        border: 1px solid #ccc;
+        padding: 0.8rem 1rem; /* Use rem units and adjust padding */
+        border-bottom: 1px solid #eee; /* Lighter border between rows */
         text-align: left;
       }
+
       th {
-        background-color: #f9f9f9;
+        background-color: #f9f9f9; /* Very light gray for header */
+        font-weight: 600; /* Slightly bolder header text */
+        color: #555;
+        border-bottom-width: 2px; /* Thicker border below header */
+        border-bottom-color: #ddd;
+      }
+
+      /* Optional: Hover effect for table rows */
+      tbody tr:hover {
+        background-color: #f5f7fa; /* Subtle hover */
+      }
+
+      /* Styling for the back link */
+      .back-link {
+        color: #1a73e8; /* Blue link color */
+        text-decoration: none;
+        display: inline-flex; /* Use flex for icon alignment */
+        align-items: center;
+        transition: color 0.2s;
+      }
+
+      .back-link:hover {
+        color: #1256a1; /* Darker blue on hover */
+        text-decoration: underline;
+      }
+
+      .back-link i {
+        margin-right: 0.5rem;
       }
     </style>
   </head>
   <body>
-    <h1>Smart Devices</h1>
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Power (W)</th>
-        <th>User</th>
-      </tr>
-      <% devices.forEach(device => { %>
-      <tr>
-        <td><%= device.DeviceID %></td>
-        <td><%= device.Name %></td>
-        <td><%= device.Type %></td>
-        <td><%= device.Status %></td>
-        <td><%= device.PowerConsumption %></td>
-        <td><%= device.UserName || 'Unassigned' %></td>
-      </tr>
-      <% }) %>
-    </table>
-    <p><a href="/">← Back to Home</a></p>
+    <header>
+      <h1>Smart Home Management System</h1>
+      <a href="/logout" class="logout">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </header>
+
+    <div class="container">
+      <div class="content-box">
+        <h1 class="page-title">
+          <i class="fas fa-laptop-house"></i> Smart Devices
+        </h1>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Power (W)</th>
+              <th>User</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% devices.forEach(device => { %>
+            <tr>
+              <td><%= device.DeviceID %></td>
+              <td><%= device.Name %></td>
+              <td><%= device.Type %></td>
+              <td><%= device.Status %></td>
+              <td><%= device.PowerConsumption %></td>
+              <td><%= device.UserName || 'Unassigned' %></td>
+            </tr>
+            <% }) %> <% if (devices.length === 0) { %>
+            <tr>
+              <td
+                colspan="6"
+                style="text-align: center; color: #777; padding: 2rem"
+              >
+                No devices found.
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <a href="/home" class="back-link">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+      </p>
+    </div>
   </body>
 </html>

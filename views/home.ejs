@@ -137,6 +137,14 @@
             <h3>Automation Rules</h3>
           </a>
         </div>
+        <% if (user && user.isAdmin) { %>
+        <div class="menu-item">
+          <a href="/admin-check">
+            <i class="fas fa-user-shield"></i>
+            <h3>Admin Settings</h3>
+          </a>
+        </div>
+        <% } %>
       </div>
     </div>
   </body>

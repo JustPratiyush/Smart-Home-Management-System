@@ -35,7 +35,7 @@ function isAdmin(req, res, next) {
   if (req.session.user && req.session.user.isAdmin) {
     next();
   } else {
-    res.status(403).send("Access denied. Admin privileges required.");
+    res.render("access-denied", { user: req.session.user });
   }
 }
 
@@ -158,6 +158,11 @@ app.get("/", isAuthenticated, (req, res) => {
 app.get("/home", isAuthenticated, (req, res) => {
   // Assuming you have a 'home.ejs' view file in your 'views' directory
   res.render("home", { user: req.session.user });
+});
+
+// --- NEW ADMIN CHECK ROUTE ---
+app.get("/admin-check", isAuthenticated, isAdmin, (req, res) => {
+  res.redirect("/admin/dashboard");
 });
 
 // Admin routes
